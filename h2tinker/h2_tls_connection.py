@@ -1,9 +1,7 @@
 import socket
 import ssl
-
 import scapy.contrib.http2 as h2
 import scapy.supersocket as supersocket
-
 from h2tinker import log
 from h2tinker.h2_connection import H2Connection
 from h2tinker.assrt import assert_error
@@ -53,6 +51,15 @@ class H2TLSConnection(H2Connection):
 
         self._send_preface()
         self._send_initial_settings()
+        self.send_ping_frame()  # Hier wird das Ping-Frame gesendet
         self._setup_wait_loop()
         self.is_setup_completed = True
         log.info("Completed HTTP/2 connection setup")
+
+    def send_ping_frame(self):
+        # create PING frame with data "12345678"
+        ping_data = "12345678".encode('utf-8')
+        ping_frame = h2.H2Frame(flags={'A'}) / h2.H2PingFrame(ping_data)
+        
+        # send PING frame
+        self.sock.send(ping_frame)
