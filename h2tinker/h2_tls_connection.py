@@ -43,6 +43,7 @@ class H2TLSConnection(H2Connection):
         ssl_ctx = ssl.create_default_context()
         ssl_ctx.set_alpn_protocols(['h2'])
         ssl_sock = ssl_ctx.wrap_socket(raw_sock, server_hostname=host)
+        ssl_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 0)
         ssl_sock.connect(addrinfo[4])
 
         assert_error('h2' == ssl_sock.selected_alpn_protocol(), 'Server did not agree to use HTTP/2 in ALPN')
