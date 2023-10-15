@@ -59,7 +59,7 @@ class H2TLSConnection(H2Connection):
     def send_ping_frame(self):
         # create PING frame with data "12345678"
         ping_data = "12345678".encode('utf-8')
-        ping_frame = h2.H2Frame(flags={'A'}) / h2.H2PingFrame(ping_data)
+        ping_frame = h2.H2Frame() / h2.H2PingFrame(ping_data)
         
         # send PING frame
         self.sock.send(ping_frame)
